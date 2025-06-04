@@ -1,82 +1,113 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MTGRandomizer - Invoca una carta</title>
+  <title>MTGRandomizer</title>
+
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-b from-gray-900 to-gray-800 text-white min-h-screen flex flex-col items-center p-4 font-serif">
-  <h1 class="text-xs mb-2 font-bold text-yellow-200 mb-4">Magic The Gathering - Randomizer</h1>
-  <!-- Loader -->
-  <div id="loader" class="flex flex-col items-center justify-center mb-4">
-    <img src="img/loader_01.gif" alt="Invocando brujo..." class="w-24 h-24 image-render-pixel" />
-    <p class="text-yellow-100 text-sm mt-2 italic">Invocando carta mágica...</p>
-  </div>
-  <!-- Carta -->
-  <div id="card-container" class="hidden flex flex-col w-full max-w-sm">
-    <img id="card-image" class="w-full rounded-2xl mb-4" />
-    <ul>
-      <li><h3 id="card-name" class="text-xl font-bold text-left mb-4"></h3></li>
-      <li><p id="card-mana" class="text-sm text-gray-100 text-left mb-2"></p></li>
-      <li><p id="card-type" class="text-sm text-gray-100 text-left mb-2"></p></li>
-      <li><p id="card-text" class="text-sm mb-4 text-gray-100 text-left mb-2"></p></li>
-      <li><p id="card-set" class="text-sm text-gray-100 text-left mb-2"></p></li>
-    </ul>
-  </div>
-  <!-- Botón -->
-  <button id="shuffle-btn" class="mt-6 px-8 py-6 bg-yellow-500 text-gray-900 font-bold uppercase tracking-wide shadow-md hover:bg-yellow-400 transition rounded-full text-4xl">
-    <i class="fa fa-refresh" aria-hidden="true"></i>
+<body class="bg-gradient-to-b from-gray-900 to-gray-800 text-white min-h-screen flex flex-col font-serif pb-20">
+
+  <!-- Sección de Inicio -->
+  <section id="home-section" class="flex flex-col items-center justify-center p-6 hidden">
+    <h1 class="text-xl font-bold text-yellow-200 mb-4">Bienvenido a MTGRandomizer</h1>
+    <p class="text-sm text-center text-white">Explora cartas, invócalas al azar o usa el buscador próximamente.</p>
+  </section>
+
+  <!-- Sección del Randomizador (la app actual) -->
+  <section id="randomizer-section" class="flex flex-col items-center justify-center p-4">
+    <h1 class="text-xs mb-2 font-bold text-yellow-200">Magic The Gathering - Randomizer</h1>
+
+    <!-- Loader -->
+    <div id="loader" class="flex flex-col items-center justify-center mb-4">
+      <img src="img/loader_01.gif" alt="Invocando brujo..." class="w-24 h-24 image-render-pixel" />
+      <p class="text-yellow-100 text-sm mt-2 italic">Invocando carta mágica...</p>
+    </div>
+
+    <!-- Carta -->
+    <div id="card-container" class="hidden flex flex-col w-full max-w-sm">
+      <img id="card-image" class="w-full rounded-2xl mb-4" />
+      <ul>
+        <li><h3 id="card-name" class="text-xl font-bold text-left"></h3></li>
+        <li><p id="card-mana" class="text-sm text-gray-100 text-left"></p></li>
+        <li><p id="card-type" class="text-sm text-gray-100 text-left"></p></li>
+        <li><p id="card-text" class="text-sm mb-4 text-gray-100 text-left"></p></li>
+        <li><p id="card-set" class="text-sm text-gray-100 text-left"></p></li>
+      </ul>
+    </div>
+
+    <!-- Botón -->
+    <button id="shuffle-btn" class="mt-6 px-6 py-2 bg-yellow-500 text-gray-900 font-bold uppercase tracking-wide shadow-md hover:bg-yellow-400 transition">
+      <i class="fas fa-dice mr-2"></i>
+    </button>
+  </section>
+
+  <!-- Sección de Buscador -->
+  <section id="search-section" class="flex flex-col items-center justify-center p-6 hidden">
+   <h2 class="text-lg font-bold mb-4 text-yellow-300">Buscador de Cartas</h2>
+
+<form id="filter-form" class="flex flex-wrap gap-2 mb-4 justify-center">
+  <select id="mana-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
+    <option value="">Maná</option>
+    <option value="W">Blanco</option>
+    <option value="U">Azul</option>
+    <option value="B">Negro</option>
+    <option value="R">Rojo</option>
+    <option value="G">Verde</option>
+  </select>
+
+  <select id="type-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
+    <option value="">Tipo</option>
+    <option value="creature">Criatura</option>
+    <option value="instant">Instantáneo</option>
+    <option value="sorcery">Conjuro</option>
+    <option value="artifact">Artefacto</option>
+    <option value="enchantment">Encantamiento</option>
+    <option value="land">Tierra</option>
+    <option value="planeswalker">Planeswalker</option>
+  </select>
+
+  <select id="set-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
+    <option value="">Expansión</option>
+    <option value="khm">Kaldheim</option>
+    <option value="neo">Kamigawa: Neon Dynasty</option>
+    <option value="m21">Core Set 2021</option>
+    <option value="eld">Throne of Eldraine</option>
+  </select>
+
+  <button type="submit" class="bg-yellow-500 text-gray-900 font-bold px-4 py-2 rounded hover:bg-yellow-400 transition w-full sm:w-auto">
+    Buscar
   </button>
+</form>
 
-  <script>
-    const btn = document.getElementById('shuffle-btn');
-    const image = document.getElementById('card-image');
-    const name = document.getElementById('card-name');
-    const text = document.getElementById('card-text');
-    const mana = document.getElementById('card-mana');
-    const type = document.getElementById('card-type');
-    const set = document.getElementById('card-set');
-    const loader = document.getElementById('loader');
-    const container = document.getElementById('card-container');
+<!-- Resultados -->
+<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
 
-    async function getRandomCard() {
-      loader.classList.remove('hidden');
-      container.classList.add('hidden');
+  </section>
 
-      try {
-        const res = await fetch('https://api.scryfall.com/cards/random');
-        const card = await res.json();
+  <!-- Navegación Inferior Fija -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 text-white flex justify-around items-center h-16">
+    <button onclick="showSection('home')" class="flex flex-col items-center text-xs hover:text-yellow-400 transition">
+      <i class="fas fa-home text-lg"></i>
+      <span>Inicio</span>
+    </button>
+    <button onclick="showSection('randomizer')" class="flex flex-col items-center text-xs hover:text-yellow-400 transition">
+      <i class="fas fa-dice text-lg"></i>
+      <span>Random</span>
+    </button>
+    <button onclick="showSection('search')" class="flex flex-col items-center text-xs hover:text-yellow-400 transition">
+      <i class="fas fa-search text-lg"></i>
+      <span>Buscar</span>
+    </button>
+  </nav>
 
-        if (!card.image_uris || !card.image_uris.normal) {
-          throw new Error("Carta sin imagen válida");
-        }
-
-        image.src = card.image_uris.normal;
-        name.textContent = card.name;
-        text.textContent = card.oracle_text || 'Sin texto';
-        mana.innerHTML = `<i class="fas fa-fire text-red-400 mr-1"></i>Coste de maná: ${card.mana_cost || 'N/A'}`;
-        type.innerHTML = `<i class="fas fa-scroll text-yellow-300 mr-1"></i>Tipo: ${card.type_line}`;
-        set.innerHTML = `<i class="fas fa-cube text-green-300 mr-1"></i>Expansión: ${card.set_name}`;
-
-        loader.classList.add('hidden');
-        container.classList.remove('hidden');
-      } catch (err) {
-        console.error('Error al obtener carta:', err);
-        loader.classList.add('hidden');
-        container.classList.remove('hidden');
-        name.textContent = "Error al cargar carta";
-        image.src = '';
-        text.textContent = '';
-        mana.textContent = '';
-        type.textContent = '';
-        set.textContent = '';
-      }
-    }
-
-    btn.addEventListener('click', getRandomCard);
-    window.addEventListener('load', getRandomCard);
-  </script>
+  <!-- JavaScript externo -->
+  <script src="js/app.js"></script>
 </body>
 </html>
