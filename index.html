@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carta Mística</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-gray-700 text-white min-h-screen flex flex-col items-center justify-center px-4 py-8 font-serif">
+  <h1 class="text-3xl font-bold mb-6 text-yellow-200 drop-shadow-lg">Carta Mística</h1>
+
+  <div id="card-container" class="bg-gray-800 rounded-xl p-4 shadow-lg w-full max-w-sm text-center">
+    <img id="card-image" class="w-full h-auto rounded-lg mb-4 shadow-md" src="" alt="Carta MTG" />
+    <h2 id="card-name" class="text-xl font-semibold text-green-200"></h2>
+    <p id="card-text" class="text-sm mt-2 text-gray-300 italic"></p>
+  </div>
+
+  <button id="shuffle-btn" class="mt-6 bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded-xl shadow-md">
+    🔮 Mezclar
+  </button>
+
+  <script>
+    const btn = document.getElementById('shuffle-btn');
+    const image = document.getElementById('card-image');
+    const name = document.getElementById('card-name');
+    const text = document.getElementById('card-text');
+
+    async function getRandomCard() {
+      try {
+        const res = await fetch('https://api.magicthegathering.io/v1/cards?pageSize=100');
+        const data = await res.json();
+        const cards = data.cards.filter(card => card.imageUrl);
+        const randomCard = cards[Math.floor(Math.random() * cards.length)];
+
+        image.src = randomCard.imageUrl;
+        name.textContent = randomCard.name;
+        text.textContent = randomCard.text || "Sin descripción.";
+      } catch (error) {
+        console.error("Error al obtener carta:", error);
+        name.textContent = "Error al cargar carta";
+        image.src = "";
+        text.textContent = "";
+      }
+    }
+
+    btn.addEventListener('click', getRandomCard);
+    window.addEventListener(
