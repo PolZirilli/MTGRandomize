@@ -7,18 +7,24 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-br from-gray-900 to-gray-700 text-white min-h-screen flex flex-col items-center justify-center px-4 py-8 font-serif">
-  <h1 class="text-3xl font-bold mb-6 text-yellow-200 drop-shadow-lg">Carta Mística</h1>
-
-  <div id="card-container" class="bg-gray-800 rounded-xl p-4 shadow-lg w-full max-w-sm text-center">
-    <img id="card-image" class="w-full h-auto rounded-lg mb-4 shadow-md" src="" alt="Carta MTG" />
-    <h2 id="card-name" class="text-xl font-semibold text-green-200"></h2>
-    <p id="card-text" class="text-sm mt-2 text-gray-300 italic"></p>
-  </div>
-
-  <button id="shuffle-btn" class="mt-6 bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded-xl shadow-md">
-    🔮 Mezclar
-  </button>
-
+    <h1 class="text-3xl font-bold mb-6 text-yellow-200 drop-shadow-lg">Carta Mística</h1>
+    <div id="loader" class="flex flex-col items-center justify-center mb-4">
+        <img src="brujo-caminando.gif" alt="Cargando" class="w-24 h-24">
+        <p class="text-yellow-100 text-sm mt-2 italic">Invocando una carta...</p>
+    </div>
+  
+    <div id="card-container" class="bg-gray-800 rounded-xl p-4 shadow-lg w-full max-w-sm text-center">
+        <img id="card-image" class="w-full h-auto rounded-lg mb-4 shadow-md" src="" alt="Carta MTG" />
+        <h2 id="card-name" class="text-xl font-semibold text-green-200"></h2>
+        <p id="card-text" class="text-sm mt-2 text-gray-300 italic"></p>
+        <div id="card-info" class="bg-gray-700 p-3 mt-4 text-left text-sm tracking-wide text-gray-200 font-mono border border-gray-600">
+            <p id="card-mana"></p>
+            <p id="card-type" class="mt-1"></p>
+            <p id="card-set" class="mt-1"></p>
+        </div>
+    </div>
+    <button id="shuffle-btn" class="mt-6 bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded-xl shadow-md">🔮 Mezclar</button>
+  
   <script>
     const btn = document.getElementById('shuffle-btn');
     const image = document.getElementById('card-image');
