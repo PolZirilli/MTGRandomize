@@ -24,24 +24,36 @@
     const image = document.getElementById('card-image');
     const name = document.getElementById('card-name');
     const text = document.getElementById('card-text');
+    const mana = document.getElementById('card-mana');
+    const type = document.getElementById('card-type');
+    const set = document.getElementById('card-set');
 
     async function getRandomCard() {
-      try {
-        const res = await fetch('https://api.magicthegathering.io/v1/cards?pageSize=100');
-        const data = await res.json();
-        const cards = data.cards.filter(card => card.imageUrl);
-        const randomCard = cards[Math.floor(Math.random() * cards.length)];
+    try {
+        // Mostrar loader
+        document.getElementById('loader').classList.remove('hidden');
+        document.getElementById('card-container').classList.add('hidden');
 
-        image.src = randomCard.imageUrl;
-        name.textContent = randomCard.name;
-        text.textContent = randomCard.text || "Sin descripción.";
-      } catch (error) {
-        console.error("Error al obtener carta:", error);
+        const res = await fetch('https://api.scryfall.com/cards/random');
+        const card = await res.json();
+
+        // Cargar datos
+        image.src = card.image_uris?.normal || '';
+        name.textContent = card.name;
+        text.textContent = card.oracle_text || 'Sin texto';
+        mana.textContent = `Coste de maná: ${card.mana_cost || 'N/A'}`;
+        type.textContent = `Tipo: ${card.type_line}`;
+        set.textContent = `Expansión: ${card.set_name}`;
+
+        // Mostrar carta, ocultar loader
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('card-container').classList.remove('hidden');
+
+    } catch (error) {
+        console.error("Error:", error);
         name.textContent = "Error al cargar carta";
-        image.src = "";
-        text.textContent = "";
-      }
+    }
     }
 
     btn.addEventListener('click', getRandomCard);
-    window.addEventListener(
+    window.addEventListener('load', getRandomCard);
