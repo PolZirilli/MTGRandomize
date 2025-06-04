@@ -101,12 +101,43 @@ form.addEventListener('submit', async (e) => {
         <p class="text-sm">${card.type_line}</p>
       `;
       results.appendChild(cardDiv);
+      cardDiv.addEventListener('click', () => showModal(card));
+
     });
   } catch (err) {
     console.error(err);
     results.innerHTML = `<p class="text-red-400">Error al buscar cartas.</p>`;
   }
 });
+
+const modal = document.getElementById('card-modal');
+const modalImage = document.getElementById('modal-image');
+const modalName = document.getElementById('modal-name');
+const modalMana = document.getElementById('modal-mana');
+const modalType = document.getElementById('modal-type');
+const modalText = document.getElementById('modal-text');
+const modalSet = document.getElementById('modal-set');
+const closeModal = document.getElementById('close-modal');
+
+// Mostrar modal con datos
+function showModal(card) {
+  modalImage.src = card.image_uris?.normal || '';
+  modalName.textContent = card.name;
+  modalMana.textContent = `Coste de maná: ${card.mana_cost || 'N/A'}`;
+  modalType.textContent = `Tipo: ${card.type_line}`;
+  modalSet.textContent = `Expansión: ${card.set_name}`;
+  modalText.textContent = card.oracle_text || 'Sin descripción';
+  modal.classList.remove('hidden');
+}
+
+// Cerrar modal
+closeModal.addEventListener('click', () => modal.classList.add('hidden'));
+
+// También cerrar si se hace clic fuera del contenido
+modal.addEventListener('click', e => {
+  if (e.target === modal) modal.classList.add('hidden');
+});
+
 
 
 //
