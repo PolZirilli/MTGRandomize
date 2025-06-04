@@ -52,43 +52,26 @@
   <section id="search-section" class="flex flex-col items-center justify-center p-6 hidden">
    <h2 class="text-lg font-bold mb-4 text-yellow-300">Buscador de Cartas</h2>
 
-<form id="filter-form" class="flex flex-wrap gap-2 mb-4 justify-center">
-  <select id="mana-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
-    <option value="">Maná</option>
-    <option value="W">Blanco</option>
-    <option value="U">Azul</option>
-    <option value="B">Negro</option>
-    <option value="R">Rojo</option>
-    <option value="G">Verde</option>
-  </select>
-
-  <select id="type-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
-    <option value="">Tipo</option>
-    <option value="creature">Criatura</option>
-    <option value="instant">Instantáneo</option>
-    <option value="sorcery">Conjuro</option>
-    <option value="artifact">Artefacto</option>
-    <option value="enchantment">Encantamiento</option>
-    <option value="land">Tierra</option>
-    <option value="planeswalker">Planeswalker</option>
-  </select>
-
-  <select id="set-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
-    <option value="">Expansión</option>
-    <option value="khm">Kaldheim</option>
-    <option value="neo">Kamigawa: Neon Dynasty</option>
-    <option value="m21">Core Set 2021</option>
-    <option value="eld">Throne of Eldraine</option>
-  </select>
-
-  <button type="submit" class="bg-yellow-500 text-gray-900 font-bold px-4 py-2 rounded hover:bg-yellow-400 transition w-full sm:w-auto">
-    Buscar
-  </button>
-</form>
-
-<!-- Resultados -->
-<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
-
+  <form id="filter-form" class="flex flex-wrap gap-2 mb-4 justify-center">
+    <select id="mana-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
+      <option value="">Maná</option><option value="W">Blanco</option><option value="U">Azul</option><option value="B">Negro</option><option value="R">Rojo</option><option value="G">Verde</option>
+    </select>
+    <select id="type-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
+      <option value="">Tipo</option>
+      <option value="creature">Criatura</option><option value="instant">Instantáneo</option><option value="sorcery">Conjuro</option><option value="artifact">Artefacto</option><option value="enchantment">Encantamiento</option><option value="land">Tierra</option><option value="planeswalker">Planeswalker</option>
+    </select>
+    <select id="set-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
+      <option value="">Expansión</option>
+      <option value="khm">Kaldheim</option><option value="neo">Kamigawa: Neon Dynasty</option><option value="m21">Core Set 2021</option><option value="eld">Throne of Eldraine</option>
+    </select>
+    <button type="submit" class="bg-yellow-500 text-gray-900 font-bold px-4 py-2 rounded hover:bg-yellow-400 transition w-full sm:w-auto">
+      Buscar
+    </button>
+  </form>
+  
+  <!-- Resultados -->
+  <div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-4"></div>
+  
   </section>
 
   <!-- Navegación Inferior Fija -->
