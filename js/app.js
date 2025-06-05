@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function searchCardsByName() {
         const cardName = cardNameInput.value.trim();
         if (!cardName) {
-            searchCardResults.innerHTML = '<p class="text-center text-yellow-600 py-4">Por favor, introduce un nombre de carta.</p>';
+            searchCardResults.innerHTML = '<p class="text-center text-yellow-600 py-4">Por favor, introduce una busqueda.</p>';
             return;
         }
         searchCardResults.innerHTML = `<p class="text-center text-neutral-500 py-4">Buscando "${cardName}"...</p>`;
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             imageUrl = cardData.card_faces[0].image_uris.normal;
         }
         const img = document.createElement('img');
-        img.className = 'w-xl max-w-[186px] h-auto rounded-md mb-3 shadow-sm'; // Ajustado tamaño para mobile first
+        img.className = 'w-xl max-w-[420px] h-auto rounded-md mb-3 shadow-sm'; // Ajustado tamaño para mobile first
         img.src = imageUrl;
         img.alt = cardData.name;
         img.loading = 'lazy';
