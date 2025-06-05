@@ -1,111 +1,52 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MTGRandomizer</title>
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic: The Gathering - Medieval Pastel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-gradient-to-b from-gray-900 to-gray-800 text-white min-h-screen flex flex-col font-serif pb-20">
+<body class="bg-stone-900 text-neutral-700 font-sans min-h-screen flex flex-col">
+    <header class="bg-slate-600 text-white py-4 shadow-md sticky top-0 z-40"> <h1 class="text-xl md:text-2xl font-bold text-center">Magic: The Gathering</h1>
+    </header>
 
-  <!-- Sección de Inicio -->
-  <section id="home-section" class="flex flex-col items-center justify-center p-6 hidden">
-    <h1 class="text-xl font-bold text-yellow-200 mb-4">Bienvenido a MTGRandomizer</h1>
-    <p class="text-sm text-center text-white">Explora cartas, invócalas al azar o usa el buscador próximamente.</p>
-  </section>
+    <main class="container mx-auto px-4 flex-grow mb-16">
+        <section id="search-card-section" class="content-section bg-slate-100 p-6 rounded-lg shadow-xl">
+            <h2 class="text-2xl font-semibold text-neutral-700 text-center mb-6">Buscador de Cartas</h2>
+            <div class="search-controls flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+                <label for="cardNameInput" class="sr-only">Nombre de la carta:</label>
+                <input type="text" id="cardNameInput" placeholder="Ej: Black Lotus" class="w-full sm:w-auto flex-grow px-4 py-2 border border-slate-600 rounded-md shadow-sm focus:ring-1 focus:ring-rose-500 focus:border-rose-500 transition-shadow">
+                <button id="searchCardButton" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-600 text-white font-semibold px-6 py-2 rounded-md shadow-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-opacity-75">
+                    <i class="fas fa-search mr-2"></i>Buscar
+                </button>
+            </div>
+            <div id="searchCardResults" class="mt-6 min-h-[200px]">
+                <p class="text-neutral-500 text-center">Introduce un nombre y haz clic en buscar.</p>
+            </div>
+        </section>
+        <section id="random-card-section" class="content-section bg-white p-6 rounded-lg shadow-xl hidden">
+            <h2 class="text-2xl font-semibold text-neutral-700 text-center mb-6">Carta Aleatoria</h2>
+            <button id="randomCardButton" title="Obtener carta aleatoria" class="w-20 h-20 bg-yellow-500 hover:bg-stone-600 text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-md transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-75">
+                <i class="fas fa-dice"></i>
+            </button>
+            <div id="randomCardDisplay" class="mt-6 min-h-[200px] flex justify-center items-start">
+                <p class="text-neutral-500">Haz clic en el dado para ver una carta aleatoria.</p>
+            </div>
+        </section>
+    </main>
+    
+    <nav class="fixed bottom-0 left-0 right-0 h-16 bg-slate-600 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex justify-around items-center z-50">
+        <button data-target="search-card-section" class="nav-item flex-1 flex flex-col items-center justify-center p-2 text-stone-900 hover:bg-stone-900 transition-colors h-full">
+            <i class="fas fa-search text-xl mb-1"></i>
+            <span class="text-xs sm:text-sm">Buscador</span>
+        </button>
+        <button data-target="random-card-section" class="nav-item flex-1 flex flex-col items-center justify-center p-2 text-stone-900 hover:bg-stone-900 transition-colors h-full">
+            <i class="fas fa-dice text-xl mb-1"></i>
+            <span class="text-xs sm:text-sm">Aleatoria</span>
+        </button>
+    </nav>
 
-  <!-- Sección del Randomizador (la app actual) -->
-  <section id="randomizer-section" class="flex flex-col items-center justify-center p-4">
-    <h1 class="text-xs mb-2 font-bold text-yellow-200">Magic The Gathering - Randomizer</h1>
-
-    <!-- Loader -->
-    <div id="loader" class="flex flex-col items-center justify-center mb-4">
-      <img src="img/loader_01.gif" alt="Invocando brujo..." class="h-24 image-render-pixel" />
-      <p class="text-yellow-100 text-sm mt-2 italic">Invocando carta mágica...</p>
-    </div>
-
-    <!-- Carta -->
-    <div id="card-container" class="hidden flex flex-col w-full max-w-sm">
-      <img id="card-image" class="w-full rounded-2xl mb-4" />
-      <ul>
-        <li><h3 id="card-name" class="text-xl font-bold text-left"></h3></li>
-        <li><p id="card-mana" class="text-sm text-gray-100 text-left"></p></li>
-        <li><p id="card-type" class="text-sm text-gray-100 text-left"></p></li>
-        <li><p id="card-text" class="text-sm mb-4 text-gray-100 text-left"></p></li>
-        <li><p id="card-set" class="text-sm text-gray-100 text-left"></p></li>
-      </ul>
-    </div>
-
-    <!-- Botón -->
-    <button id="shuffle-btn" class="mt-6 px-6 py-2 bg-yellow-500 text-gray-900 font-bold uppercase tracking-wide shadow-md hover:bg-yellow-400 transition">
-      <i class="fas fa-dice mr-2"></i>
-    </button>
-  </section>
-
-  <!-- Sección de Buscador -->
-  <section id="search-section" class="flex flex-col items-center justify-center p-6 hidden">
-   <h2 class="text-lg font-bold mb-4 text-yellow-300">Buscador de Cartas</h2>
-
-  <form id="filter-form" class="flex flex-wrap gap-2 mb-4 justify-center">
-    <select id="mana-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
-      <option value="">Maná</option><option value="W">Blanco</option><option value="U">Azul</option><option value="B">Negro</option><option value="R">Rojo</option><option value="G">Verde</option>
-    </select>
-    <select id="type-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
-      <option value="">Tipo</option>
-      <option value="creature">Criatura</option><option value="instant">Instantáneo</option><option value="sorcery">Conjuro</option><option value="artifact">Artefacto</option><option value="enchantment">Encantamiento</option><option value="land">Tierra</option><option value="planeswalker">Planeswalker</option>
-    </select>
-    <select id="set-select" class="bg-gray-900 text-white border border-yellow-400 p-2 rounded w-full sm:w-auto">
-      <option value="">Expansión</option>
-      <option value="khm">Kaldheim</option><option value="neo">Kamigawa: Neon Dynasty</option><option value="m21">Core Set 2021</option><option value="eld">Throne of Eldraine</option>
-    </select>
-    <button type="submit" class="bg-yellow-500 text-gray-900 font-bold px-4 py-2 rounded hover:bg-yellow-400 transition w-full sm:w-auto">
-      Buscar
-    </button>
-  </form>
-  
-  <!-- Resultados -->
-  <div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-4"></div>
-  
-  </section>
-
-  <!-- Navegación Inferior Fija -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 text-white flex justify-around items-center h-16">
-    <button onclick="showSection('home')" class="flex flex-col items-center text-xs hover:text-yellow-400 transition">
-      <i class="fas fa-home text-lg"></i>
-      <span>Inicio</span>
-    </button>
-    <button onclick="showSection('randomizer')" class="flex flex-col items-center text-xs hover:text-yellow-400 transition">
-      <i class="fas fa-dice text-lg"></i>
-      <span>Random</span>
-    </button>
-    <button onclick="showSection('search')" class="flex flex-col items-center text-xs hover:text-yellow-400 transition">
-      <i class="fas fa-search text-lg"></i>
-      <span>Buscar</span>
-    </button>
-  </nav>
-
-
-<!-- Modal -->
-<div id="card-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
-  <div class="bg-gray-900 border border-yellow-400 rounded-lg max-w-md w-full p-4 relative">
-    <button id="close-modal" class="absolute top-2 right-2 text-yellow-300 text-xl">&times;</button>
-    <img id="modal-image" class="w-full mb-4 rounded">
-    <h3 id="modal-name" class="text-xl font-bold text-yellow-300 mb-2"></h3>
-    <p id="modal-mana" class="text-sm text-gray-200 mb-1"></p>
-    <p id="modal-type" class="text-sm text-gray-200 mb-1"></p>
-    <p id="modal-set" class="text-sm text-gray-200 mb-1"></p>
-    <p id="modal-text" class="text-sm text-gray-300 mt-3 italic"></p>
-  </div>
-</div>
-
-
-  <!-- JavaScript externo -->
-  <script src="js/app.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
