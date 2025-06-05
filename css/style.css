@@ -1,0 +1,150 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background: #333;
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+main {
+    padding: 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+section {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+hr {
+    margin: 30px 0;
+    border: 0;
+    border-top: 1px solid #ccc;
+}
+
+/* Botón de Carta Aleatoria */
+#randomCardButton {
+    display: block;
+    margin: 10px auto 20px auto;
+    width: 70px; /* Aumentado para mejor click */
+    height: 70px; /* Aumentado para mejor click */
+    border-radius: 50%; /* Hace el botón circular */
+    background-color: #5cb85c;
+    color: white;
+    font-size: 30px; /* Tamaño del icono */
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+#randomCardButton:hover {
+    background-color: #4cae4c;
+}
+
+/* Área de visualización de cartas */
+.card-display-area, .card-results-area {
+    text-align: center;
+    margin-top: 20px;
+    min-height: 150px; /* Para que tenga algo de espacio antes de cargar contenido */
+}
+
+.card-item {
+    display: inline-block; /* Para mostrar varias cartas en línea */
+    margin: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    vertical-align: top; /* Alinea las cartas por la parte superior */
+}
+
+.card-item img {
+    max-width: 200px; /* Ajusta según sea necesario */
+    height: auto;
+    display: block;
+    margin-bottom: 5px;
+    border-radius: 8px; /* Bordes redondeados para la imagen de la carta */
+}
+
+.card-item p {
+    margin: 5px 0 0 0;
+    font-weight: bold;
+}
+
+/* Controles de Búsqueda */
+.search-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Espacio entre input y botón */
+    margin-bottom: 20px;
+}
+
+.search-controls label {
+    margin-right: 5px;
+}
+
+.search-controls input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1; /* El input toma el espacio disponible */
+    max-width: 300px;
+}
+
+.search-controls button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-controls button:hover {
+    background-color: #0056b3;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #333;
+    color: #fff;
+    margin-top: 30px;
+}
+
+footer a {
+    color: #5cb85c;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
