@@ -1,143 +1,160 @@
-const btn = document.getElementById('shuffle-btn');
-const image = document.getElementById('card-image');
-const name = document.getElementById('card-name');
-const text = document.getElementById('card-text');
-const mana = document.getElementById('card-mana');
-const type = document.getElementById('card-type');
-const set = document.getElementById('card-set');
-const loader = document.getElementById('loader');
-const container = document.getElementById('card-container');
+document.addEventListener('DOMContentLoaded', () => {
+    // Elementos de las secciones de contenido
+    const searchCardSection = document.getElementById('search-card-section');
+    const randomCardSection = document.getElementById('random-card-section');
+    const contentSections = [searchCardSection, randomCardSection];
 
-const sections = {
-  home: document.getElementById('home-section'),
-  randomizer: document.getElementById('randomizer-section'),
-  search: document.getElementById('search-section')
-};
+    // Elementos de navegación inferior
+    const navItems = document.querySelectorAll('.nav-item');
 
-function showSection(sectionName) {
-  for (const key in sections) {
-    if (sections.hasOwnProperty(key)) {
-      sections[key].classList.add('hidden');
-    }
-  }
-  sections[sectionName].classList.remove('hidden');
+    // Elementos de la sección aleatoria
+    const randomCardButton = document.getElementById('randomCardButton');
+    const randomCardDisplay = document.getElementById('randomCardDisplay');
 
-  if (sectionName === 'randomizer') {
-    getRandomCard();
-  }
-}
+    // Elementos de la sección de búsqueda
+    const cardNameInput = document.getElementById('cardNameInput');
+    const searchCardButton = document.getElementById('searchCardButton');
+    const searchCardResults = document.getElementById('searchCardResults');
 
-async function getRandomCard() {
-  loader.classList.remove('hidden');
-  container.classList.add('hidden');
+    const SCRYFALL_API_BASE = 'https://api.scryfall.com';
 
-  try {
-    const res = await fetch('https://api.scryfall.com/cards/random');
-    const card = await res.json();
-
-    if (!card.image_uris || !card.image_uris.normal) {
-      throw new Error("Carta sin imagen válida");
+    // --- Lógica de Navegación ---
+    function setActiveNavItem(targetId) {
+        navItems.forEach(item => {
+            if (item.dataset.target === targetId) {
+                item.classList.add('text-white', 'font-semibold'); // Color activo
+                item.classList.remove('text-yellow-100');
+            } else {
+                item.classList.remove('text-white', 'font-semibold');
+                item.classList.add('text-yellow-100');
+            }
+        });
     }
 
-    image.src = card.image_uris.normal;
-    name.textContent = card.name;
-    text.textContent = card.oracle_text || 'Sin texto';
-    mana.innerHTML = `<i class="fas fa-fire text-red-400 mr-1"></i>Coste de maná: ${card.mana_cost || 'N/A'}`;
-    type.innerHTML = `<i class="fas fa-scroll text-yellow-300 mr-1"></i>Tipo: ${card.type_line}`;
-    set.innerHTML = `<i class="fas fa-cube text-green-300 mr-1"></i>Expansión: ${card.set_name}`;
-
-    loader.classList.add('hidden');
-    container.classList.remove('hidden');
-  } catch (err) {
-    console.error('Error al obtener carta:', err);
-    loader.classList.add('hidden');
-    container.classList.remove('hidden');
-    name.textContent = "Error al cargar carta";
-    image.src = '';
-    text.textContent = '';
-    mana.textContent = '';
-    type.textContent = '';
-    set.textContent = '';
-  }
-}
-
-const form = document.getElementById('filter-form');
-const results = document.getElementById('results');
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const mana = document.getElementById('mana-select').value;
-  const type = document.getElementById('type-select').value;
-  const set = document.getElementById('set-select').value;
-
-  let query = 'https://api.scryfall.com/cards/search?q=';
-
-  if (mana) query += `mana:{${mana}}+`;
-  if (type) query += `type:${type}+`;
-  if (set) query += `set:${set}+`;
-
-  query = query.trim().replace(/\+$/, '');
-
-  results.innerHTML = `<p class="text-yellow-200 italic">Buscando...</p>`;
-
-  try {
-    const res = await fetch(query);
-    const data = await res.json();
-
-    if (!data.data || data.data.length === 0) {
-      results.innerHTML = `<p class="text-red-400">No se encontraron cartas.</p>`;
-      return;
+    function showSection(targetId) {
+        contentSections.forEach(section => {
+            if (section.id === targetId) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+        });
+        setActiveNavItem(targetId);
     }
 
-    results.innerHTML = '';
-    data.data.forEach(card => {
-      const cardDiv = document.createElement('div');
-      cardDiv.classList.add('border', 'border-yellow-500', 'p-2', 'bg-gray-900', 'rounded', 'text-center', 'shadow-md');
-
-      cardDiv.innerHTML = `
-        <img src="${card.image_uris?.small || ''}" alt="${card.name}" class="mb-2 rounded">
-        <h3 class="font-bold text-yellow-300">${card.name}</h3>
-        <p class="text-sm">${card.type_line}</p>
-      `;
-      results.appendChild(cardDiv);
-      cardDiv.addEventListener('click', () => showModal(card));
-
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const targetSectionId = item.dataset.target;
+            showSection(targetSectionId);
+        });
     });
-  } catch (err) {
-    console.error(err);
-    results.innerHTML = `<p class="text-red-400">Error al buscar cartas.</p>`;
-  }
+
+    // Mostrar sección de búsqueda por defecto al cargar
+    showSection('search-card-section');
+
+    // --- Funcionalidad de Carta Aleatoria ---
+    if (randomCardButton) { // Verificar que el botón existe antes de añadir listener
+        randomCardButton.addEventListener('click', fetchRandomCard);
+    }
+
+    async function fetchRandomCard() {
+        randomCardDisplay.innerHTML = '<p class="text-center text-neutral-500 py-4">Cargando carta aleatoria...</p>';
+        try {
+            const response = await fetch(`${SCRYFALL_API_BASE}/cards/random`);
+            if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+            const cardData = await response.json();
+            displaySingleCard(cardData, randomCardDisplay);
+        } catch (error) {
+            console.error('Error al obtener carta aleatoria:', error);
+            randomCardDisplay.innerHTML = `<p class="text-center text-red-500 py-4">No se pudo cargar la carta. Error: ${error.message}</p>`;
+        }
+    }
+
+    // --- Funcionalidad de Búsqueda de Cartas ---
+    if (searchCardButton) { // Verificar que los elementos existen
+        searchCardButton.addEventListener('click', searchCardsByName);
+    }
+    if (cardNameInput) {
+        cardNameInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') searchCardsByName();
+        });
+    }
+    
+    async function searchCardsByName() {
+        const cardName = cardNameInput.value.trim();
+        if (!cardName) {
+            searchCardResults.innerHTML = '<p class="text-center text-yellow-600 py-4">Por favor, introduce un nombre de carta.</p>';
+            return;
+        }
+        searchCardResults.innerHTML = `<p class="text-center text-neutral-500 py-4">Buscando "${cardName}"...</p>`;
+        try {
+            const response = await fetch(`${SCRYFALL_API_BASE}/cards/search?q=name:"${encodeURIComponent(cardName)}"&unique=prints`);
+            if (!response.ok) {
+                if (response.status === 404) {
+                     searchCardResults.innerHTML = `<p class="text-center text-yellow-600 py-4">No se encontraron cartas con el nombre "${cardName}".</p>`;
+                } else {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                return;
+            }
+            const searchData = await response.json();
+            if (searchData.data && searchData.data.length > 0) {
+                displayMultipleCards(searchData.data, searchCardResults);
+            } else {
+                searchCardResults.innerHTML = `<p class="text-center text-yellow-600 py-4">No se encontraron cartas con el nombre "${cardName}".</p>`;
+            }
+        } catch (error) {
+            console.error('Error al buscar cartas:', error);
+            searchCardResults.innerHTML = `<p class="text-center text-red-500 py-4">Error al realizar la búsqueda. ${error.message}</p>`;
+        }
+    }
+
+    // --- Funciones Auxiliares para Mostrar Cartas (con clases de Tailwind) ---
+    function createCardElement(cardData) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'md:p-4 rounded-lg hover:shadow-xl transition-shadow duration-200 ease-in-out flex flex-col items-center text-center';
+        let imageUrl = 'https://via.placeholder.com/223x310.png?text=No+Image';
+        if (cardData.image_uris && cardData.image_uris.normal) {
+            imageUrl = cardData.image_uris.normal;
+        } else if (cardData.card_faces && cardData.card_faces[0].image_uris && cardData.card_faces[0].image_uris.normal) {
+            imageUrl = cardData.card_faces[0].image_uris.normal;
+        }
+        const img = document.createElement('img');
+        img.className = 'w-xl max-w-[186px] h-auto rounded-md mb-3 shadow-sm'; // Ajustado tamaño para mobile first
+        img.src = imageUrl;
+        img.alt = cardData.name;
+        img.loading = 'lazy';
+        const name = document.createElement('p');
+        name.className = 'font-semibold text-sm text-neutral-700 mt-auto';
+        name.textContent = cardData.name;
+        cardDiv.appendChild(img);
+        cardDiv.appendChild(name);
+        return cardDiv;
+    }
+
+    function displaySingleCard(cardData, displayElement) {
+        displayElement.innerHTML = '';
+        const cardElement = createCardElement(cardData);
+        // Para la carta aleatoria, podría ser bueno darle un max-width al contenedor de la carta
+        const wrapper = document.createElement('div');
+        wrapper.className = 'mx-auto'; // Centra y limita el ancho de la carta única
+        wrapper.appendChild(cardElement);
+        displayElement.appendChild(wrapper);
+    }
+
+    function displayMultipleCards(cardsArray, displayElement) {
+        displayElement.innerHTML = '';
+        if (cardsArray.length === 0) {
+            displayElement.innerHTML = '<p class="text-center text-neutral-500 py-4">No se encontraron cartas.</p>';
+            return;
+        }
+        const gridContainer = document.createElement('div');
+        // Ajustado grid para mobile-first, más columnas en pantallas más grandes
+        gridContainer.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4';
+        cardsArray.forEach(cardData => {
+            const cardElement = createCardElement(cardData);
+            gridContainer.appendChild(cardElement);
+        });
+        displayElement.appendChild(gridContainer);
+    }
 });
-
-const modal = document.getElementById('card-modal');
-const modalImage = document.getElementById('modal-image');
-const modalName = document.getElementById('modal-name');
-const modalMana = document.getElementById('modal-mana');
-const modalType = document.getElementById('modal-type');
-const modalText = document.getElementById('modal-text');
-const modalSet = document.getElementById('modal-set');
-const closeModal = document.getElementById('close-modal');
-
-// Mostrar modal con datos
-function showModal(card) {
-  modalImage.src = card.image_uris?.normal || '';
-  modalName.textContent = card.name;
-  modalMana.textContent = `Coste de maná: ${card.mana_cost || 'N/A'}`;
-  modalType.textContent = `Tipo: ${card.type_line}`;
-  modalSet.textContent = `Expansión: ${card.set_name}`;
-  modalText.textContent = card.oracle_text || 'Sin descripción';
-  modal.classList.remove('hidden');
-}
-
-// Cerrar modal
-closeModal.addEventListener('click', () => modal.classList.add('hidden'));
-
-// También cerrar si se hace clic fuera del contenido
-modal.addEventListener('click', e => {
-  if (e.target === modal) modal.classList.add('hidden');
-});
-
-
-
-//
